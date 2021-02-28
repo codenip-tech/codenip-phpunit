@@ -10,7 +10,7 @@ use Symfony\Component\Uid\Uuid;
 
 class User implements UserInterface
 {
-    private function __construct(
+    public function __construct(
         private string $id,
         private string $name,
         private string $email,
@@ -45,15 +45,6 @@ class User implements UserInterface
     public function getEmail(): string
     {
         return $this->email;
-    }
-
-    public function setEmail(string $email)
-    {
-        if (!\filter_var($email, \FILTER_VALIDATE_EMAIL)) {
-            throw InvalidEmailException::fromEmail($email);
-        }
-
-        $this->email = $email;
     }
 
     public function getRoles(): array
