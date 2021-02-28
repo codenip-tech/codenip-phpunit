@@ -88,4 +88,14 @@ class User implements UserInterface
     public function eraseCredentials(): void
     {
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'createdOn' => $this->createdOn->format(\DateTime::RFC3339),
+        ];
+    }
 }

@@ -5,3 +5,9 @@ api_register:
 
 api_login_check:
   path: /api/v1/login-check
+  methods: [POST]
+
+api_get_user:
+  path: /api/v1/users
+  controller: App\Controller\GetUserAction
+  methods: [GET]

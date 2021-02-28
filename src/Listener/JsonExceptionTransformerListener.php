@@ -10,6 +10,7 @@ use App\Exception\UserNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class JsonExceptionTransformerListener
 {
@@ -37,6 +38,10 @@ class JsonExceptionTransformerListener
 
         if ($exception instanceof HttpExceptionInterface) {
             $data['code'] = $exception->getStatusCode();
+        }
+
+        if ($exception instanceof AuthenticationException) {
+            $data['code'] = JsonResponse::HTTP_UNAUTHORIZED;
         }
 
         $event->setResponse($this->prepareResponse($data));
