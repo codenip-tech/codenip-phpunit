@@ -1,0 +1,59 @@
+version: '3.5'
+
+services:
+  codenip-phpunit-web:
+    container_name: codenip-phpunit-web
+    build:
+      context: ./docker/nginx
+      args:
+        UID: $U_ID
+    ports:
+      - 1000:80
+    volumes:
+      - ./public:/appdata/www/public
+    depends_on:
+      - codenip-phpunit-be
+    networks:
+      - codenip-phpunit-network
+
+  codenip-phpunit-be:
+    container_name: codenip-phpunit-be
+    build:
+      context: docker/php
+      args:
+        UID: $U_ID
+    volumes:
+      - ./:/appdata/www
+    ###> XDEBUG 3 ###
+    # Use your client IP here
+    # Linux: run "ip a | grep docker0"
+    # Windows (with WSL2): Run "grep nameserver /etc/resolv.conf  | cut -d ' ' -f2"
+    # MacOS: host.docker.internal
+    environment:
+      XDEBUG_CLIENT_HOST: 172.17.0.1
+      XDEBUG_CLIENT_PORT: 9003
+      PHP_IDE_CONFIG: serverName=codenip-phpunit
+    networks:
+      - codenip-phpunit-network
+
+  codenip-phpunit-db:
+    container_name: codenip-phpunit-db
+    build:
+      context: ./docker/database
+    ports:
+      - 10000:3306
+    environment:
+      MYSQL_DATABASE: database
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - codenip-phpunit-db-data:/var/lib/mysql
+    networks:
+      - codenip-phpunit-network
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+volumes:
+  codenip-phpunit-db-data:
+
+networks:
+  codenip-phpunit-network:
+    external: true
