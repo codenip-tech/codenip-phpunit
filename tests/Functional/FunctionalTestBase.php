@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Connection;
 use Hautelook\AliceBundle\PhpUnit\RecreateDatabaseTrait;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -46,5 +47,19 @@ class FunctionalTestBase extends WebTestCase
                 'HTTP_Authorization' => \sprintf('Bearer %s', $token),
             ]);
         }
+    }
+
+    protected static function initDBConnection(): Connection
+    {
+        if (null === static::$kernel) {
+            static ::bootKernel();
+        }
+
+        return static::$kernel->getContainer()->get('doctrine')->getConnection();
+    }
+
+    protected function getPeterId()
+    {
+        return self::initDBConnection()->executeQuery('SELECT id FROM user WHERE email = "peter@api.com"')->fetchOne();
     }
 }

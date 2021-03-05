@@ -15,14 +15,14 @@ class RegisterActionService
     public function __construct(
         private UserRepository $userRepository,
         private JWTTokenManagerInterface $JWTTokenManager,
-        private UserPasswordEncoderInterface $userPasswordEncoder
+        private EncoderServiceInterface $encoderService
     ) {
     }
 
     public function __invoke(RegisterRequest $request): string
     {
         $user = User::create($request->getName(), $request->getEmail());
-        $user->setPassword($this->userPasswordEncoder->encodePassword($user, $request->getPassword()));
+        $user->setPassword($this->encoderService->generateEncodedPasswordForUser($user, $request->getPassword()));
 
         $this->userRepository->save($user);
 

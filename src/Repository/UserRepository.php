@@ -18,6 +18,15 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($managerRegistry, User::class);
     }
 
+    public function byIdOrFail(string $id): User
+    {
+        if (null === $user = $this->find($id)) {
+            throw UserNotFoundException::fromId($id);
+        }
+
+        return $user;
+    }
+
     public function byEmailOrFail(string $email): User
     {
         if (null === $user = $this->findOneBy(['email' => $email])) {

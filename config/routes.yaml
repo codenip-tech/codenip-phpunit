@@ -11,3 +11,8 @@ api_get_user:
   path: /api/v1/users
   controller: App\Controller\GetUserAction
   methods: [GET]
+
+api_change_password:
+  path: /api/v1/users/{id}/change-password
+  controller: App\Controller\ChangePasswordAction
+  methods: [POST]
