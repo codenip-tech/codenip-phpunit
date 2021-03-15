@@ -24,6 +24,8 @@ class RegisterActionService
         $user = User::create($request->getName(), $request->getEmail());
         $user->setPassword($this->encoderService->generateEncodedPasswordForUser($user, $request->getPassword()));
 
+        $randomPassword = $this->encoderService->generateEncodedPasswordForUser($user, 'random-password');
+
         $this->userRepository->save($user);
 
         return $this->JWTTokenManager->create($user);
